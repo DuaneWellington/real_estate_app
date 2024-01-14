@@ -1,13 +1,14 @@
 from django.urls import path
 from . import views
-from .views import realty_data_view, contact_view
+from .views import realty_data_view, contact_view, search_view, results_view
 
 urlpatterns = [
     path('', views.home, name='home'),
+    # path('', home_view, name='home'),
     path('about/', views.about, name="about"),
     path('api/realty_data/', realty_data_view, name="realty_data_api"),
-    path('search/', views.search, name="search"),
-    path('results/', views.results, name="results"),
+    path('search/', search_view, name="search"),
+    path('results/', results_view, name="results"),
     path('error/', views.error, name="error"),
     path('contact/', contact_view, name='contact'),
 

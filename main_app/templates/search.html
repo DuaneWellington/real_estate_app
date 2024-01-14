@@ -1,10 +1,23 @@
+<!-- PATH: 'main_app/templates/search.html' -->
+
 {% extends 'base.html' %}
 {% block content %}
 
-<form method="get" action="{% url 'realty_data_api' %}">
+
+<h1 class="text-4xl font-bold">Property Search</h1>
+<h3 class="text-lg mb-4">Fill out the fields and click 'Search' to find a list of properties that match your criteria</h3>
+<form method="get" action="{% url 'results' %}" class="mb-8">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Search</button>
+    {{ form.min_list_price }}
+    {{ form.max_list_price }}
+    {{ form.min_bedrooms }}
+    {{ form.max_bedrooms }}
+    {{ form.min_bathrooms }}
+    {{ form.max_bathrooms }}
+    
+    
+    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</button>
 </form>
 
 {% endblock %}

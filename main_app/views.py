@@ -1,3 +1,5 @@
+# PATH: 'main_app/views.py'
+
 from django.shortcuts import render
 from .forms import RealtySearchForm
 from django.http import JsonResponse
@@ -6,7 +8,6 @@ from .utils import fetch_realty_data
 # Create your views here.
 
 def home(request):
-
     return render(request, 'home.html')
 
 def about(request):
@@ -15,8 +16,36 @@ def about(request):
 def search(request):
     return render(request, 'search.html')
 
+def search_view(request):
+    form = RealtySearchForm(request.GET)
+    return render(request, 'search.html', {'form' : form})
+
 def results(request):
     return render(request, 'results.html')
+
+def results_view(request):
+    if request.method == 'GET':
+        form = RealtySearchForm(request.GET)
+        if form.is_valid():
+            min_list_price = form.cleaned_data['min_list_price']
+            max_list_price = form.cleaned_data['max_list_price']
+            bedrooms = form.cleaned_data['bedrooms']
+            bathrooms = form.cleaned_data['bathrooms']
+            try:
+                realty_data = fetch_realty_data(min_list_price, max_list_price, bedrooms, bathrooms)
+
+                if realty_data:
+                    return render(request, 'results.html', {'realty_data': realty_data})
+                else:
+                    error_message = "Failed to fetch data from API"
+                    return render(request, 'error.html', {'error_message': error_message}) 
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+                error_message = "An error occurred while fetching data from API"
+                return render(request, 'error.html', {'error_message': error_message}) 
+        
+        else:
+            return render(request, 'error.html', {'error_message': "Invalid form data"})
     
 def error(request):
     return render(request, 'error.html')
