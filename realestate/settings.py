@@ -41,7 +41,32 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'main_app',
+    'allauth',
+    # 'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1  # You may need to configure the Site model
+
+LOGIN_REDIRECT_URL = '/'  # Set the URL to redirect to after a successful login
+
+# Optional: Specify the social account providers you want to enable
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': 'your-google-client-id',
+            'secret': 'your-google-client-secret',
+            'key': '',
+        }
+    },
+    # Add other providers as needed
+}
+
 
 TAILWIND_APP_NAME = 'theme'
 

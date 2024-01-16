@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>New Listings</h1>
+
+  {% for listing in new_listings %}
+    <div class="listing">
+      <h2>{{ listing.title }}</h2>
+      <p>{{ listing.description }}</p>
+      <p>Price: ${{ listing.price }}</p>
+      <!-- Add more details based on your listing model -->
+    </div>
+  {% endfor %}
+
+  {% if new_listings.has_other_pages %}
+    <span class="pagination">
+      <span class="step-links">
+          {% if new_listings.has_previous %}
+              <a href="?page=new_listings.number-1">&laquo; previous</a>
+          {% endif %}
+          <span class="current">
+              Page {{ new_listings.number }} of {{ new_listings.paginator.num_pages }}.
+          </span>
+          {% if new_listings.has_next %}
+              <a href="?page=new_listings.number+1">next &raquo;</a>
+          {% endif %}
+      </span>
+    </span>
+  {% endif %}
+{% endblock %}

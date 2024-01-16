@@ -1,22 +1,6 @@
-{% load static tailwind_tags %}
-<!-- <!DOCTYPE html>
-<html lang="en">
-	<head>
-    <title>Django Tailwind</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		{% tailwind_css %}
-	</head>
+<!-- PATH: theme/templates/base.html  -->
 
-	<body class="bg-gray-50 font-serif leading-normal tracking-normal">
-		<div class="container mx-auto">
-			<section class="flex items-center justify-center h-screen">
-				<h1 class="text-5xl">Django + Tailwind = ❤️</h1>
-			</section>
-		</div>
-	</body>
-</html> -->
+{% load static tailwind_tags %}
 
 {% load static %}
 
@@ -28,23 +12,40 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>DW Real Estate</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> -->
   <link rel="stylesheet" type="text/css" href="{% static 'output.css' %}">
   {% tailwind_css %}
 </head>
 <body>
-  <header class="navbar-fixed">
+  <header class="navbar-fixed bg-slate-200 shadow-md">
     <nav>
-      <div class="nav-wrapper">
-        <ul>
-          <li><a href="/" class="left brand-logo">&nbsp;&nbsp;DW Real Estate</a></li>
-        </ul>
-        <ul class="right">
-          <li><a href="/about">About</a></li>
-          <!-- <li><a href="/home">Home</a></li> -->
-          <li><a href="/contact">Contact</a></li>
-          <li><a href="/search">Search</a></li>
-
+      <div class="nav-wrapper bg-slate-200 shadow-md">
+		<div class="flex justify-between items-center align-middle max-w-6xl mx-auto p-3">
+          <a href="/">
+			<h1 class="font-bold text-sm sm:text-xl flex flex-wrap">
+			<span class="text-slate-500">&nbsp;&nbsp;DW Real</span>
+			<span class="text-slate-700"> Estate</span>
+		</h1>
+	</a>
+		<form class="flex bg-slate-100 text-slate-700 items-center align-middle p-3 rounded-lg">
+			<input type="text" placeholder="Search..." class="text-xs sm:text-sm bg-transparent focus:outline-none w-24 sm:w-64" value>
+			<button>
+				<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M1003.2 1003.2c-28.8 28.8-75.2 28.8-104 0l-223.2-224c-57.6 44.8-131.2 72-211.2 72-192 0-348.8-156.8-348.8-348.8s156.8-348.8 348.8-348.8 348.8 156.8 348.8 348.8c0 80-27.2 153.6-72 211.2l224 224c28.8 28.8 28.8 75.2 0 104zM348.8 608c0 140.8-115.2 256-256 256s-256-115.2-256-256 115.2-256 256-256 256 115.2 256 256z"></path>
+				</svg>
+			</button>
+		</form>
+        <ul class="flex gap-4">
+			<a href="/about">
+				<li class="hidden sm:inline text-slate-500 hover:underline">About
+				</li>
+			</a>
+			<a href="/contact">
+          <li class="hidden sm:inline text-slate-500 hover:underline">Contact
+		  </li>
+		</a>
+		<a href="/register">
+          <li class="hidden sm:inline text-slate-800 hover:underline">Sign In
+			</li>
+			</a>
         </ul>
       </div>
     </nav>
@@ -53,8 +54,6 @@
     {% block content %}
     {% endblock %}
   </main>
-  <footer class="page-footer">
-    <div class="right">All Rights Reserved, &copy; 2021 DW Real Estate &nbsp;</div>
-  </footer>
+  <footer class="page-footer bg-gray-700 text-white">All Rights Reserved, &copy; 2024 DW Real Estate &nbsp;
 </body>
 </html>

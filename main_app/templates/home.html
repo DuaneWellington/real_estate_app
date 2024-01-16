@@ -1,19 +1,76 @@
+<!-- PATH: main_app/templates/home.html -->
+
 {% extends 'base.html' %}
 {% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DW Real Estate</title>
 </head>
 <body>
-    <h1>Home</h1>
+    <h1 class="text-4xl font-bold text-slate-700">Let us help you find your next home!</h1>
+    <!-- add a blurb here that links to either the search or the signin/login -->
+
+    <section class="hero">
+        <div id="hero-carousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+
+                {% for hero_image_url in hero_image_urls %}
+                <div class="carousel-item {% if forloop.first %} active{% endif %}">
+                    <img src="{{ hero_image_url }}" alt="Hero Image" class="d-block w-100">
+                </div>
+                {% endfor %}
+
+            </div>
+            <a class="carousel-control-prev" href="#hero-carousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#hero-carousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </section>
+    <section class="new-listings">
+        <h2>New Listings</h2>
+        <!-- add a list of the 5 most recent listings here -->
+        <a href="{% url 'new_listings' %}">Show More New Listings</a>
+
+        {% for listing in new_listings_data.listings %}
+        <!-- {% for property in new_listings %} -->
+        <div class="property-card" onclick="location.href='{% url 'property_detail' property.id %}'">
+            <img src="{{ property.image.url }}" alt=""{{ property.title }}>
+            <h3>{{property.title }}</h3>
+            <p>{{ property.address }}</p>
+                <p>{{ property.description }}</p>
+                <p>Price: ${{ property.price }}</p>
+                <p>Bedrooms: {{ property.bedrooms }}</p>
+                <p>Bathrooms: {{ property.bathrooms }}</p>
+        </div>
+        {% endfor %}
+
+    </section>
+
+    <section>
+        <h2>New Rentals</h2>
+        <!-- add a list of the 5 most recent rentals here -->
+        <a href="{% url 'new_rentals' %}">Show More New Rentals</a>
+
+        {% for property in new_rentals %}
+        <div class="rental-card" onclick="location.href='{% url 'rental_detail' rental.id %}'">
+            <img src="{{ rental.image.url }}" alt=""{{ rental.title }}>
+            <h3>{{ rental.title }}</h3>
+            <p>{{ rental.address }}</p>
+                <p>{{ rental.description }}</p>
+                <p>Price: ${{ rental.price }}</p>
+                <p>Bedrooms: {{ rental.bedrooms }}</p>
+                <p>Bathrooms: {{ rental.bathrooms }}</p>
+        </div>
+        {% endfor %}
+        
+    </section>
 </body>
 <hr>
-<footer>All Rights Reserved, &copy; 2024 DW Real Estate</footer>
-
 </html>
 
+{% endfor %}
 {% endblock %}
