@@ -12,6 +12,7 @@ django-tailwindcss = "*"
 tailwind = "*"
 django-browser-reload = "*"
 tailwindcss = "*"
+django-allauth = "*"
 
 [dev-packages]
 
