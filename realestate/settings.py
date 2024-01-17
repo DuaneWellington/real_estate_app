@@ -11,10 +11,18 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DJANGO_SECRET_KEY = config('DJANGO_SECRET_KEY')
+
+DJANGO_SECRET_KEY = 
+X_RAPIDAPI_KEY =
+X_RAPIDAPI_HOST =
+AUTHORIZATION =
+X_API_KEY=
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -25,7 +33,9 @@ SECRET_KEY = 'django-insecure-negojr097yu_ekgyicl3lo_zba6lux_tg+9c^ouw1jva+pejp9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "dwrealestate-74c439c17de3.herokuapp.com"
+]
 
 
 # Application definition

@@ -14,6 +14,7 @@ django-browser-reload = "*"
 tailwindcss = "*"
 django-allauth = "*"
 django-tailwind = {extras = ["reload"], version = "*"}
+python-decouple = "*"
 
 [dev-packages]
 
