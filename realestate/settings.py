@@ -40,10 +40,10 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'main_app',
-    'allauth',
+    # 'allauth',
     # 'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.google',
     'django_browser_reload',
 ]
 
