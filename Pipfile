@@ -9,6 +9,7 @@ psycopg2-binary = "*"
 django-heroku = "*"
 django-on-heroku = "*"
 gunicorn = "*"
+django-tailwindcss = "*"
 
 [dev-packages]
 
