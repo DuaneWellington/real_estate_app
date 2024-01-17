@@ -4,11 +4,14 @@
   "description": "",
   "main": "postcss.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:css": ""
   },
-  "author": "",
+  "author": "tailwindcss build path/to/your/css/file.css -o path/to/output.css",
   "license": "ISC",
   "devDependencies": {
     "tailwindcss": "^3.4.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
   }
 }
