@@ -38,13 +38,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     "whitenoise.runserver_nostatic",  # new
     'django.contrib.staticfiles',
-    'tailwind',
-    'theme',
     'main_app',
     'allauth',
     # 'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'tailwind',
+    'theme',
+]
+
+TAILWIND_APP_NAME = 'theme'
+
+INTERNAL_IPS = [
+    "127.0.0.1",
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -73,11 +79,6 @@ STORAGES = {
 },
 }
 
-TAILWIND_APP_NAME = 'theme'
-
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
