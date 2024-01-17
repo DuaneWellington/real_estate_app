@@ -46,23 +46,18 @@ def register(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')
         password = request.POST.get('password')
+        user = authenticate(request, firstname=firstname, lastname=lastname, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('profile')
+        else:
+            return HttpResponseServerError("Invalid login credentials")
+    else:
+        return render(request, 'registration/login.html')
 
-# def YourRegistrationView(View):
-#     template_name = 'registration/register.html'
-
-#     def get(self, request):
-#         form = UserCreationForm()
-#         return render(request, self.template_name, {'form': form})
-    
-#     def post(self, request):
-#         form = UserCreationForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             return redirect('home')
-#         return render(request, self.template_name, {'form': form})
 
 def home(request):
     new_listings_data = fetch_new_listings()
@@ -70,6 +65,9 @@ def home(request):
     new_listings = Property.objects.filter(status='For Sale')[:5]
     new_rentals = Rental.objects.filter(status='For Rent')[:5]
     return render(request, 'home.html', {'hero_image_urls': hero_image_urls, 'new_listings_data': new_listings_data, 'new_rentals': new_rentals})
+
+def profile(request):
+    return render(request, 'profile.html')
 
 def new_listings(request):
     new_listings = Property.objects.filter(status='For Sale')
@@ -155,6 +153,20 @@ def realty_data_view(request):
 
         return render(request, 'error.html', {'error_message': error_message})
 
+# def YourRegistrationView(View):
+#     template_name = 'registration/register.html'
+
+#     def get(self, request):
+#         form = UserCreationForm()
+#         return render(request, self.template_name, {'form': form})
+    
+#     def post(self, request):
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)
+#             return redirect('home')
+#         return render(request, self.template_name, {'form': form})
 
 
     # reference_number = request.GET.get('reference_number')

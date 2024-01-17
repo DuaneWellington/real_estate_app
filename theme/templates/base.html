@@ -17,35 +17,58 @@
 </head>
 <body>
   <header class="navbar-fixed bg-slate-200 shadow-md">
-    <nav>
-      <div class="nav-wrapper bg-slate-200 shadow-md">
-		<div class="flex justify-between items-center align-middle max-w-6xl mx-auto p-3">
+    <nav class="h-16">
+      <div class="nav-wrapper bg-slate-200 shadow-md h-full">
+		<div class="flex justify-between items-center align-middle max-w-6xl mx-auto p-2">
           <a href="/">
 			<h1 class="font-bold text-sm sm:text-xl flex flex-wrap">
 			<span class="text-slate-500">&nbsp;&nbsp;DW Real</span>
 			<span class="text-slate-700"> Estate</span>
 		</h1>
 	</a>
-		<form class="flex bg-slate-100 text-slate-700 items-center align-middle p-3 rounded-lg">
-			<input type="text" placeholder="Search..." class="text-xs sm:text-sm bg-transparent focus:outline-none w-24 sm:w-64" value>
-			<button>
-				<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M1003.2 1003.2c-28.8 28.8-75.2 28.8-104 0l-223.2-224c-57.6 44.8-131.2 72-211.2 72-192 0-348.8-156.8-348.8-348.8s156.8-348.8 348.8-348.8 348.8 156.8 348.8 348.8c0 80-27.2 153.6-72 211.2l224 224c28.8 28.8 28.8 75.2 0 104zM348.8 608c0 140.8-115.2 256-256 256s-256-115.2-256-256 115.2-256 256-256 256 115.2 256 256z"></path>
+		<form class="flex bg-slate-100 text-slate-700 items-center align-middle p-1 rounded-lg h-10 -mt-2">
+			<input type="text" placeholder="Search..." class="text-xs sm:text-sm bg-transparent focus:outline-none w-24 sm:w-64 h-full" value>
+			<button class="m1-1 focus:outline-none bg-transparent">
+				<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="1.3em" width="1.5em" xmlns="http://www.w3.org/2000/svg"><path d="M1003.2 1003.2c-28.8 28.8-75.2 28.8-104 0l-223.2-224c-57.6 44.8-131.2 72-211.2 72-192 0-348.8-156.8-348.8-348.8s156.8-348.8 348.8-348.8 348.8 156.8 348.8 348.8c0 80-27.2 153.6-72 211.2l224 224c28.8 28.8 28.8 75.2 0 104zM348.8 608c0 140.8-115.2 256-256 256s-256-115.2-256-256 115.2-256 256-256 256 115.2 256 256z"></path>
 				</svg>
 			</button>
 		</form>
         <ul class="flex gap-4">
-			<a href="/about">
+			<a href="{% url 'about' %}">
 				<li class="hidden sm:inline text-slate-500 hover:underline">About
 				</li>
 			</a>
-			<a href="/contact">
+			<a href="{% url 'contact' %}">
           <li class="hidden sm:inline text-slate-500 hover:underline">Contact
 		  </li>
 		</a>
-		<a href="/register">
+		{% if user.is_authenticated %}
+		<a href="{% url 'profile' %}">
+			<li class="hidden sm:inline text-slate-500 hover:underline">Profile
+			</li>
+		</a>
+
+		<form method="post" action="{% url 'logout' %}">
+			{% csrf_token %}
+			<button type="submit" class="hidden sm:inline text-slate-500 hover:underline">Logout</button>
+		</form>
+		
+
+		<!-- <a href="{% url 'logout' %}">
+			<button class="hidden sm:inline text-slate-500 hover:underline">Logout</button>
+		</a>
+ -->
+		<!-- <a href="{% url 'logout' %}" class="text-slate-500 hover:underline">Logout</a> -->
+			<!-- <a href="/logout">
+				<li class="hidden sm:inline text-slate-500 hover:underline">Logout
+				</li>
+			</a> -->
+		{% else %}
+		<a href="{% url 'register' %}">
           <li class="hidden sm:inline text-slate-800 hover:underline">Sign In
 			</li>
 			</a>
+			{% endif %}
         </ul>
       </div>
     </nav>

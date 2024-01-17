@@ -1,6 +1,8 @@
 # main_app/models.py
 
 from django.db import models
+from django.urls import reverse
+from datetime import date
 from django.contrib.auth.models import User
 
 class Property(models.Model):
@@ -12,6 +14,7 @@ class Property(models.Model):
     bathrooms = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=50)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Rental(models.Model):
     title = models.CharField(max_length=255)
@@ -22,6 +25,7 @@ class Rental(models.Model):
     bathrooms = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=50)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
