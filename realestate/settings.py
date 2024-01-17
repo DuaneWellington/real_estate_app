@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    # "whitenoise.runserver_nostatic",  # new
     'django.contrib.staticfiles',
     'tailwind',
     'theme',
@@ -66,6 +67,11 @@ SOCIALACCOUNT_PROVIDERS = {
     # Add other providers as needed
 }
 
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whiteenoise.storage.CompressedStaticFilesStorage",
+},
+}
 
 TAILWIND_APP_NAME = 'theme'
 
