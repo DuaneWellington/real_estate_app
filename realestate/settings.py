@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # 'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django_browser_reload',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -74,6 +75,7 @@ INTERNAL_IPS = [
 ]
 
 MIDDLEWARE = [
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

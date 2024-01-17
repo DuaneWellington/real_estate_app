@@ -24,6 +24,8 @@ urlpatterns = [
     path('property/<int:property_id>/', property_detail, name='property_detail'),
     path('auto-complete/', auto_complete_view, name='auto_complete'),
 
+    path("__reload__/", include("django_browser_reload.urls", namespace="django_browser_reload")),
+
     # path('properties/', views.properties_index, name='index'),
     # path('properties/<int:property_id>/', views.properties_detail, name='detail'),
     # path('properties/create/', views.PropertyCreate.as_view(), name='properties_create'),

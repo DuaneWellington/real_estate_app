@@ -9,6 +9,8 @@ psycopg2-binary = "*"
 django-on-heroku = "*"
 gunicorn = "*"
 django-tailwindcss = "*"
+tailwind = "*"
+django-browser-reload = "*"
 
 [dev-packages]
 
