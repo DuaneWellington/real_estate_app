@@ -11,6 +11,7 @@ gunicorn = "*"
 django-tailwindcss = "*"
 tailwind = "*"
 django-browser-reload = "*"
+tailwindcss = "*"
 
 [dev-packages]
 
