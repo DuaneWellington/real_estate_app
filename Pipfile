@@ -13,6 +13,7 @@ tailwind = "*"
 django-browser-reload = "*"
 tailwindcss = "*"
 django-allauth = "*"
+django-tailwind = {extras = ["reload"], version = "*"}
 
 [dev-packages]
 
