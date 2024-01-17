@@ -18,11 +18,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DJANGO_SECRET_KEY = config('DJANGO_SECRET_KEY')
 
-DJANGO_SECRET_KEY = 
-X_RAPIDAPI_KEY =
-X_RAPIDAPI_HOST =
-AUTHORIZATION =
-X_API_KEY=
+X_RAPIDAPI_KEY = config('X_RAPIDAPI_KEY')
+X_RAPIDAPI_HOST = config('X_RAPIDAPI_HOST')
+AUTHORIZATION = config('AUTHORIZATION')
+X_API_KEY= config('X_API_KEY')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
