@@ -40,11 +40,10 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'main_app',
-    # 'allauth',
+    'allauth',
     # 'allauth.account',
-    # 'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.google',
-    'django_browser_reload',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -75,7 +74,6 @@ INTERNAL_IPS = [
 ]
 
 MIDDLEWARE = [
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
