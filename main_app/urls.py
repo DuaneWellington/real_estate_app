@@ -4,7 +4,8 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 from . import views
-from .views import realty_data_view, contact_view, search_view, results_view, register, CustomLoginView, new_listings, new_rentals, property_detail
+from .views import realty_data_view, contact_view, search_view, results_view, register, profile, CustomLoginView, new_listings, new_rentals, property_detail
+
 urlpatterns = [
     path('', views.home, name='home'),
     # path('', home_view, name='home'),
@@ -12,7 +13,7 @@ urlpatterns = [
     path('api/realty_data/', realty_data_view, name="realty_data_api"),
     path('search/', search_view, name="search"),
     path('results/', results_view, name="results"),
-    path('profile/', views.profile, name="profile"),
+    path('profile/', profile, name="profile"),
     path('error/', views.error, name="error"),
     path('contact/', contact_view, name='contact'),
     path('login/', CustomLoginView.as_view(), name='login'),

@@ -80,7 +80,8 @@ SECRET_KEY = 'django-insecure-negojr097yu_ekgyicl3lo_zba6lux_tg+9c^ouw1jva+pejp9
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "dwrealestate-74c439c17de3.herokuapp.com"
+    "dwrealestate-74c439c17de3.herokuapp.com",
+    "localhost",
 ]
 
 
@@ -95,6 +96,7 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",  # new
     'django.contrib.staticfiles',
     'main_app',
+    'realestate',
     'allauth',
     # 'allauth.account',
     'allauth.socialaccount',
@@ -198,6 +200,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+AUTH_USER_MODEL = 'main_app.CustomUser'
+
 
 
 # Internationalization

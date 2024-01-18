@@ -3,17 +3,14 @@
 # from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView as auth_login_view
-from .forms import CustomUserCreationForm
-from .forms import CustomAuthenticationForm
-from django.contrib.auth import login
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, RealtySearchForm
+from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseServerError
-from .forms import RealtySearchForm
-from django.http import JsonResponse
+from django.http import HttpResponseServerError, JsonResponse
 from .api_utils import get_dynamic_authorization
 import requests
 from .utils import fetch_realty_data, fetch_new_listings
-from .models import Property, Rental
+from .models import CustomUser, Property, Rental
 from decouple import config
 
 # Create your views here.
@@ -43,6 +40,7 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # user = authenticate(request, firstname=form.cleaned_data['firstname'], lastname=form.cleaned_data['lastname'], password=form.cleaned_data['password1'])
             login(request, user)
             return redirect('profile')
     else:

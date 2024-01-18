@@ -3,8 +3,11 @@
 from django.db import models
 from django.urls import reverse
 from datetime import date
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 
+class CustomUser(AbstractUser):
+    firstname = models.CharField(max_length=30)
+    lastname = models.CharField(max_length=30)
 class Property(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -14,7 +17,7 @@ class Property(models.Model):
     bathrooms = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=50)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Rental(models.Model):
     title = models.CharField(max_length=255)
@@ -25,7 +28,7 @@ class Rental(models.Model):
     bathrooms = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=50)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
