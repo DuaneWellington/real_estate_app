@@ -15,6 +15,7 @@ tailwindcss = "*"
 django-allauth = "*"
 django-tailwind = {extras = ["reload"], version = "*"}
 python-decouple = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

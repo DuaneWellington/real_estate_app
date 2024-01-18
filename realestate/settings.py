@@ -1,3 +1,5 @@
+# real_estate_django/realestate/settings.py
+
 """
 Django settings for realestate project.
 
@@ -12,16 +14,61 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from decouple import config, Csv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DJANGO_SECRET_KEY = config('DJANGO_SECRET_KEY')
+# get authentication for accessing Realtyna API
+# def get_api_authorization():
+# token_url = "https://realtyfeed-sso.auth.us-east-1.amazoncognito.com/oauth2/token"
+#     # logic to generate authorization
+#     return 'authorization_value'
 
-X_RAPIDAPI_KEY = config('X_RAPIDAPI_KEY')
-X_RAPIDAPI_HOST = config('X_RAPIDAPI_HOST')
-AUTHORIZATION = config('AUTHORIZATION')
-X_API_KEY= config('X_API_KEY')
+DJANGO_SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+
+X_RAPIDAPI_KEY = os.getenv('X_RAPIDAPI_KEY')
+X_RAPIDAPI_HOST = os.getenv('X_RAPIDAPI_HOST')
+AUTHORIZATION = os.getenv('AUTHORIZATION')
+X_API_KEY= os.getenv('X_API_KEY')
+
+client_id = config('REALTYNA_CLIENT_ID')
+client_secret = config('REALTYNA_CLIENT_SECRET')
+grant_type = config('REALTYNA_GRANT_TYPE')
+
+# Request body parameters
+data = {
+    "client_id": client_id,
+    "client_secret": client_secret,
+    "grant_type": "client_credentials",
+}
+
+# try:
+#     # Send POST request to obtain access token
+#     response = requests.post(token_url, data=data)
+#     response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
+
+#     # Parse JSON response
+#     json_response = response.json()
+
+#     # Extract and return access token
+#     access_token = json_response.get("access_token")
+#     return access_token
+
+# except requests.exceptions.RequestException as e:
+#     # Handle request exceptions (e.g., connection error, timeout)
+#     logging.error(f"Error obtaining access token: {e}")
+#     return None
+# except json.decoder.JSONDecodeError as e:
+#     # Handle JSON decoding errors
+#     logging.error(f"Error decoding JSON response: {e}")
+#     return None
+# except KeyError as e:
+#     # Handle missing key errors
+#     logging.error(f"Error parsing JSON response: {e}")
+#     return None
+
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/

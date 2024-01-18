@@ -10,23 +10,28 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseServerError
 from .forms import RealtySearchForm
 from django.http import JsonResponse
+from .api_utils import get_dynamic_authorization
+import requests
 from .utils import fetch_realty_data, fetch_new_listings
 from .models import Property, Rental
-
+from decouple import config
 
 # Create your views here.
 
-def auto_complete_view(request):
-    url = "https://realty-in-ca1.p.rapidapi.com/locations/v2/auto-complete"
-    querystring = {"Query": "Quebec", "CultureId": "1", "IncludeLocations": "true"}
-    headers = {
-        "X-RapidAPI-Key": "52d03659f5mshde22d1aee3d427cp1154eajsn60129072a38e",
-        "X-RapidAPI-Host": "realty-in-ca1.p.rapidapi.com"
-    }
-    response = requests.get(url, headers=headers, params=querystring)
-    data = response.json()
+def my_view(request):
+    x_rapidapi_key = config('X_RAPIDAPI_KEY')
 
-    return render(request, 'your_app/auto_complete_template.html', {'data': data})
+# def auto_complete_view(request):
+#     url = "https://realty-in-ca1.p.rapidapi.com/locations/v2/auto-complete"
+#     querystring = {"Query": "Quebec", "CultureId": "1", "IncludeLocations": "true"}
+#     headers = {
+#         "X-RapidAPI-Key": "52d03659f5mshde22d1aee3d427cp1154eajsn60129072a38e",
+#         "X-RapidAPI-Host": "realty-in-ca1.p.rapidapi.com"
+#     }
+#     response = requests.get(url, headers=headers, params=querystring)
+#     data = response.json()
+
+#     return render(request, 'your_app/auto_complete_template.html', {'data': data})
 
 class CustomLoginView(auth_login_view):
     form_class = CustomAuthenticationForm
@@ -152,6 +157,41 @@ def realty_data_view(request):
         error_message = "Invalid form data"
 
         return render(request, 'error.html', {'error_message': error_message})
+    
+def property_list(request):
+    access_token = get_dynamic_authorization()
+
+    if access_token:
+        api_url = "https://api.realtyfeed.com/reso/odata/Property"
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "x-api-key": "52d03659f5mshde22d1aee3d427cp1154eajsn60129072a38e",
+        }
+
+        response = requests.get(api_url, headers=headers)
+
+        if response.status_code == 200:
+            properties_data = response.json().get("value", [])
+
+            for property_data in properties_data:
+                listing_key = property_data.get("ListingKey")
+                modification_timestamp = property_data.get("ModificationTimestamp")
+
+                existing_property, created = Property.objects.get_or_create(
+                    listing_key=listing_key,
+                    defaults={
+                        "modification_timestamp": modification_timestamp},
+                )
+
+                if not created:
+                    existing_property.modification_timestamp = modification_timestamp
+                    existing_property.save()
+
+            properties = Property.objects.all()
+
+            return render(request, "property_list.html", {"properties": properties})
+        
+    return render(request, "error.html")
 
 # def YourRegistrationView(View):
 #     template_name = 'registration/register.html'
