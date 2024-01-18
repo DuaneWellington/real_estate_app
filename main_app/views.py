@@ -3,13 +3,14 @@
 # from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView as auth_login_view
+from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, RealtySearchForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseServerError, JsonResponse
-from .api_utils import get_dynamic_authorization
+# from .api_utils import get_dynamic_authorization
 import requests
-from .utils import fetch_realty_data, fetch_new_listings
+# from .utils import fetch_realty_data, fetch_new_listings
 from .models import CustomUser, Property, Rental
 from decouple import config
 
@@ -63,12 +64,14 @@ def login_view(request):
 
 
 def home(request):
-    new_listings_data = fetch_new_listings()
-    hero_image_urls = [listing['images'][0] for listings in new_listings_data['listings']] if new_listings_data else []
-    new_listings = Property.objects.filter(status='For Sale')[:5]
-    new_rentals = Rental.objects.filter(status='For Rent')[:5]
-    return render(request, 'home.html', {'hero_image_urls': hero_image_urls, 'new_listings_data': new_listings_data, 'new_rentals': new_rentals})
+    # new_listings_data = fetch_new_listings()
+    # hero_image_urls = [listing['images'][0] for listings in new_listings_data['listings']] if new_listings_data else []
+    # new_listings = Property.objects.filter(status='For Sale')[:5]
+    # new_rentals = Rental.objects.filter(status='For Rent')[:5]
+    # return render(request, 'home.html', {'hero_image_urls': hero_image_urls, 'new_listings_data': new_listings_data, 'new_rentals': new_rentals})
+    return render(request, 'home.html')
 
+@login_required
 def profile(request):
     return render(request, 'profile.html')
 
@@ -92,43 +95,43 @@ def search(request):
 
 # @login_required
 # def authenticated_view(request):
-def search_view(request):
-    form = RealtySearchForm(request.GET)
-    return render(request, 'search.html', {'form' : form})
+# def search_view(request):
+#     form = RealtySearchForm(request.GET)
+#     return render(request, 'search.html', {'form' : form})
         # pass
 
 def results(request):
     return render(request, 'results.html')
 
-def results_view(request):
-    if request.method == 'GET':
-        form = RealtySearchForm(request.GET)
-        if form.is_valid():
-            min_list_price = form.cleaned_data['min_list_price']
-            max_list_price = form.cleaned_data['max_list_price']
-            bedrooms = form.cleaned_data['bedrooms']
-            bathrooms = form.cleaned_data['bathrooms']
-            try:
-                realty_data = fetch_realty_data(min_list_price, max_list_price, bedrooms, bathrooms)
+# def results_view(request):
+#     if request.method == 'GET':
+#         form = RealtySearchForm(request.GET)
+#         if form.is_valid():
+#             min_list_price = form.cleaned_data['min_list_price']
+#             max_list_price = form.cleaned_data['max_list_price']
+#             bedrooms = form.cleaned_data['bedrooms']
+#             bathrooms = form.cleaned_data['bathrooms']
+#             try:
+#                 realty_data = fetch_realty_data(min_list_price, max_list_price, bedrooms, bathrooms)
 
-                if realty_data:
-                    return render(request, 'results.html', {'realty_data': realty_data})
-                else:
-                    error_message = "Failed to fetch data from API"
-                    return render(request, 'error.html', {'error_message': error_message}) 
+#                 if realty_data:
+#                     return render(request, 'results.html', {'realty_data': realty_data})
+#                 else:
+#                     error_message = "Failed to fetch data from API"
+#                     return render(request, 'error.html', {'error_message': error_message}) 
                 
-            except request.RequestException as e:
-                print(f"API request failed: {str(e)}")
-                error_message = "an error occurred while fetching data from API"
-                return render(request, 'error.html', {'error_message': error_message})
+#             except request.RequestException as e:
+#                 print(f"API request failed: {str(e)}")
+#                 error_message = "an error occurred while fetching data from API"
+#                 return render(request, 'error.html', {'error_message': error_message})
             
-            except Exception as e:
-                print(f"An error occurred: {str(e)}")
-                error_message = "An error occurred while fetching data from API"
-                return render(request, 'error.html', {'error_message': error_message}) 
+#             except Exception as e:
+#                 print(f"An error occurred: {str(e)}")
+#                 error_message = "An error occurred while fetching data from API"
+#                 return render(request, 'error.html', {'error_message': error_message}) 
         
-        else:
-            return render(request, 'error.html', {'error_message': "Invalid form data"})
+#         else:
+#             return render(request, 'error.html', {'error_message': "Invalid form data"})
     
 def error(request):
     return render(request, 'error.html')
@@ -136,60 +139,60 @@ def error(request):
 def contact_view(request):
     return render(request, 'main_app/contact.html')
 
-def realty_data_view(request):
+# def realty_data_view(request):
 
-    form = RealtySearchForm(request.GET)
+#     form = RealtySearchForm(request.GET)
 
-    if form.is_valid():
-        reference_number = form.cleaned_data['reference_number']
-        culture_id = form.cleaned_data['culture_id']
+#     if form.is_valid():
+#         reference_number = form.cleaned_data['reference_number']
+#         culture_id = form.cleaned_data['culture_id']
 
-        realty_data = fetch_realty_data(reference_number, culture_id)
+#         realty_data = fetch_realty_data(reference_number, culture_id)
 
-        if realty_data:
-            return render(request, 'results.html', {'realty_data': realty_data})
-        else:
-            return
-        error_message = "Failed to fetch data from API"
-    else:
-        error_message = "Invalid form data"
+#         if realty_data:
+#             return render(request, 'results.html', {'realty_data': realty_data})
+#         else:
+#             return
+#         error_message = "Failed to fetch data from API"
+#     else:
+#         error_message = "Invalid form data"
 
-        return render(request, 'error.html', {'error_message': error_message})
+#         return render(request, 'error.html', {'error_message': error_message})
     
-def property_list(request):
-    access_token = get_dynamic_authorization()
+# def property_list(request):
+#     access_token = get_dynamic_authorization()
 
-    if access_token:
-        api_url = "https://api.realtyfeed.com/reso/odata/Property"
-        headers = {
-            "Authorization": f"Bearer {access_token}",
-            "x-api-key": "52d03659f5mshde22d1aee3d427cp1154eajsn60129072a38e",
-        }
+#     if access_token:
+#         api_url = "https://api.realtyfeed.com/reso/odata/Property"
+#         headers = {
+#             "Authorization": f"Bearer {access_token}",
+#             "x-api-key": "52d03659f5mshde22d1aee3d427cp1154eajsn60129072a38e",
+#         }
 
-        response = requests.get(api_url, headers=headers)
+#         response = requests.get(api_url, headers=headers)
 
-        if response.status_code == 200:
-            properties_data = response.json().get("value", [])
+#         if response.status_code == 200:
+#             properties_data = response.json().get("value", [])
 
-            for property_data in properties_data:
-                listing_key = property_data.get("ListingKey")
-                modification_timestamp = property_data.get("ModificationTimestamp")
+#             for property_data in properties_data:
+#                 listing_key = property_data.get("ListingKey")
+#                 modification_timestamp = property_data.get("ModificationTimestamp")
 
-                existing_property, created = Property.objects.get_or_create(
-                    listing_key=listing_key,
-                    defaults={
-                        "modification_timestamp": modification_timestamp},
-                )
+#                 existing_property, created = Property.objects.get_or_create(
+#                     listing_key=listing_key,
+#                     defaults={
+#                         "modification_timestamp": modification_timestamp},
+#                 )
 
-                if not created:
-                    existing_property.modification_timestamp = modification_timestamp
-                    existing_property.save()
+#                 if not created:
+#                     existing_property.modification_timestamp = modification_timestamp
+#                     existing_property.save()
 
-            properties = Property.objects.all()
+#             properties = Property.objects.all()
 
-            return render(request, "property_list.html", {"properties": properties})
+#             return render(request, "property_list.html", {"properties": properties})
         
-    return render(request, "error.html")
+#     return render(request, "error.html")
 
 # def YourRegistrationView(View):
 #     template_name = 'registration/register.html'
