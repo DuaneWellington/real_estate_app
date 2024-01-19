@@ -33,16 +33,22 @@ def my_view(request):
     x_rapidapi_key = config('X_RAPIDAPI_KEY')
 
 def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # user = authenticate(request, firstname=form.cleaned_data['firstname'], lastname=form.cleaned_data['lastname'], password=form.cleaned_data['password1'])
-            login(request, user)
-            return redirect('profile')
-    else:
-        form = UserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    try:
+        if request.method == 'POST':
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                # user = authenticate(request, firstname=form.cleaned_data['firstname'], lastname=form.cleaned_data['lastname'], password=form.cleaned_data['password1'])
+                login(request, user)
+                print(f"User authenticated: {request.user}")
+                return redirect('profile')
+            else:
+                print(form.errors)
+        else:
+            form = UserCreationForm()
+        return render(request, 'registration/register.html', {'form': form})
+    except Exception as e:
+        print(f"Exception during registration: {e}")
 
 def home(request):
     # new_listings_data = fetch_new_listings()
@@ -82,7 +88,7 @@ def results(request):
 
 def property_photos(request, property_id):
     property = get_object_or_404(Property, id=property_id)
-    return render(request, 'results_photos.html', {'property': property_obj})
+    return render(request, 'results_photos.html', {'property': property})
 
     
 def error(request):
@@ -119,6 +125,25 @@ def folder_update(request, folder_id):
         form = FolderUpdateForm(instance=folder)
     return render(request, 'folder_update.html', {'folder': folder, 'form': form})
 
+@login_required
+def save_listing(request):
+    folders = Folder.objects.filter(user=request.user)
+
+    if request.method == 'POST':
+        property_id = request.POST.get('property_id')
+        folder_id = request.POST.get('folder')
+
+        print(request.POST)
+        print('Property ID:', property_id)
+        print('Folder ID:', folder_id)
+
+        property = get_object_or_404(Property, id=property_id)
+        folder = get_object_or_404(Folder, id=folder_id)
+        Listing.objects.create(property=property, folder=folder)
+        return redirect('results')  # Redirect to the results page or another page
+
+    return render(request, 'save_listing.html', {'folders': folders})
+
 def listing_toggle_favorite(request, listing_id):
     listing = get_object_or_404(Listing, id=listing_id)
     listing.favorite = not listing.favorite
@@ -135,6 +160,7 @@ def folder_delete(request, folder_id):
     folder = get_object_or_404(Folder, id=folder_id)
     folder.delete()
     return redirect('home')  # Adjust the redirection as needed
+
 
 # def realty_data_view(request):
 

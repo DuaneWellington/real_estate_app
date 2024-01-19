@@ -1,5 +1,4 @@
 <!-- PATH: 'main_app/templates/results.html' -->
-<!-- PATH: 'main_app/templates/results.html' -->
 
 {% extends 'base.html' %}
 {% block content %}
@@ -11,8 +10,22 @@
 
     <!-- Display each property from the realty_data array -->
     {% for property in realty_data %}
-        <div class="bg-white p-6 mb-6 rounded-md shadow-md">
+        <div class="bg-slate-200 p-6 mb-6 rounded-md shadow-md">
             <h2 class="text-2xl font-semibold text-slate-700">{{ property.City }}, {{ property.PostalCode }}</h2>
+            <!-- Property details -->
+            <p class="text-slate-500 font-bold mb-2">
+                <span class="text-slate-500 mb-2">Price: <span class="text-lg">{{ property.ListPrice }}</span></span>
+                <span class="text-slate-500 mb-2">Baths: {{ property.BathroomsTotalInteger }}</span>
+                <span class="text-slate-500 mb-2">Beds: {{ property.BedroomsTotal }}</span>
+                <span class="text-slate-500 mb-4">Total Sq. Ft.: {{ property.LivingArea }}</span>
+            </p>
+            <form action="{% url 'save_listing' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="property_id" value="{{ property.id }}">
+                <button type="submit" class="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded">
+                    Save Listing
+                </button>
+            </form>
 
             <!-- Clickable smaller default property image (linked to detailed photos page) -->
             {% if property.id %}
@@ -23,13 +36,6 @@
             <img src="{{ property.Media.0.MediaURL }}" alt="Property Image" class="w-full h-auto max-h-200 mb-4">
             {% endif %}
 
-            <!-- Property details -->
-            <p class="text-slate-500 font-bold mb-2">
-                <span class="text-slate-500 mb-2">Price: <span class="text-lg">{{ property.ListPrice }}</span></span>
-                <span class="text-slate-500 mb-2">Baths: {{ property.BathroomsTotalInteger }}</span>
-                <span class="text-slate-500 mb-2">Beds: {{ property.BedroomsTotal }}</span>
-                <span class="text-slate-500 mb-4">Total Sq. Ft.: {{ property.LivingArea }}</span>
-            </p>
             <!-- Add more details as needed -->
             <p class="text-slate-500">{{ property.PublicRemarks }}</p>
 

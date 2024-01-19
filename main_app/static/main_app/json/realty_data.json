@@ -358,5 +358,68 @@
         "MediaObjectID": "ad857a93-350e-44a8-bc17-8ba9ca02e777"
       }
     ]
+  },
+  {
+    "ListingKey": "41704371835391944",
+    "ListingId": "11091826",
+    "PropertyType": "Residential",
+    "PropertySubType": "House (Detached)",
+    "StandardStatus": "Active",
+    "ModificationTimestamp": "2024-01-04T12:36:13Z",
+    "ListPrice": 690000,
+    "BathroomsTotalInteger": 3,
+    "BedroomsTotal": 3,
+    "LivingArea": 1760,
+    "City": "MEDFORD",
+    "PostalCode": "08055",
+    "UnparsedAddress": "15 AMESBURY PARKE,MEDFORD,NJ,08055,BURLINGTON",
+    "Coordinates": {
+      "0": -74.82069397,
+      "1": 39.83534241,
+      "Latitude": 39.83534241,
+      "Longitude": -74.82069397
+    },
+    "InternetAddressDisplayYN": true,
+    "ListAgentFullName": "Sherraine Felder",
+    "ListOfficeName": "COLDWELL BANKER REALTY",
+    "ListAgentMlsId": "261227858",
+    "ListOfficeMlsId": "59157J",
+    "OriginatingSystemName": "MyStateMLS-Demo",
+    "PublicRemarks": "WELCOME TO COOP CITY NY. One-of-a-kind Duplex Single Family House in the Town of Bronx NY. This Detached Duplex-One Family dwelling sits on a 2375 sq ft lot that accommodates a huge backyard space at the rear and driveway. The property intersects at Eskine + Boller Avenue. It features well-maintained fixtures that give it, its original look, half a Bathroom on the 1st floor upon entry, Living Room, a separate kitchen, and 3 Bedrooms on the 2nd floor. All appliances are in working condition. Floors are covered with Ceramic Tile in the Kitchen and Bathroom, and Hardwood floors in other rooms. Backyard, driveway, and small front yard. The property is currently occupied by both Tenants that will leave at closing. You can obtain 2 properties for the price of one. The other property is the vacant land next to it. Take advantage of this opportunity NOW.",
+    "Media": [
+      {
+        "Order": 1,
+        "MediaURL": "https://dx41nk9nsacii.cloudfront.net/cdn/4/11091826/1.jpeg",
+        "ResourceRecordKey": "11091826",
+        "ResourceName": "Property",
+        "ClassName": null,
+        "MediaType": "jpeg",
+        "Thumbnail": "https://dx41nk9nsacii.cloudfront.net/cdn/4/11091826/thumbnail-1.jpeg",
+        "MediaCategory": "Photo",
+        "MediaObjectID": "0305978a-bf82-4667-9a32-0199566c67c0"
+      },
+      {
+        "Order": 2,
+        "MediaURL": "https://dx41nk9nsacii.cloudfront.net/cdn/4/11091826/2.jpeg",
+        "ResourceRecordKey": "11091826",
+        "ResourceName": "Property",
+        "ClassName": null,
+        "MediaType": "jpeg",
+        "Thumbnail": "https://dx41nk9nsacii.cloudfront.net/cdn/4/11091826/thumbnail-2.jpeg",
+        "MediaCategory": "Photo",
+        "MediaObjectID": "0c1c5313-8418-4bb2-8a48-7c0466c10859"
+      },
+      {
+        "Order": 3,
+        "MediaURL": "https://dx41nk9nsacii.cloudfront.net/cdn/4/11091826/3.jpeg",
+        "ResourceRecordKey": "11091826",
+        "ResourceName": "Property",
+        "ClassName": null,
+        "MediaType": "jpeg",
+        "Thumbnail": "https://dx41nk9nsacii.cloudfront.net/cdn/4/11091826/thumbnail-3.jpeg",
+        "MediaCategory": "Photo",
+        "MediaObjectID": "01a45fde-2a35-4558-9570-92295fa3b898"
+      }
+    ]
   }
 ]

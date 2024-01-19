@@ -10,12 +10,8 @@
         <form method="post">
             {% csrf_token %}
             <div class="mb-4">
-                {{ form.first_name.label_tag }}
-                {{ form.first_name }}
-            </div>
-            <div class="mb-4">
-                {{ form.last_name.label_tag }}
-                {{ form.last_name }}
+                {{ form.username.label_tag }}
+                {{ form.username }}
             </div>
             <div class="mb-4">
                 {{ form.password.label_tag }}

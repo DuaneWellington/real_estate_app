@@ -47,7 +47,10 @@
 			<li class="hidden sm:inline text-slate-500 hover:underline">Profile
 			</li>
 		</a>
-
+		<a href="{% url 'results' %}">
+			<li class="hidden sm:inline text-slate-500 hover:underline">Available Properties
+			</li>
+		</a>
 		<form method="post" action="{% url 'logout' %}">
 			{% csrf_token %}
 			<button type="submit" class="hidden sm:inline text-slate-500 hover:underline">Logout</button>
