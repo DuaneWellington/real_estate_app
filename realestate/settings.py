@@ -201,8 +201,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'main_app.CustomUser'
-
 
 
 # Internationalization
