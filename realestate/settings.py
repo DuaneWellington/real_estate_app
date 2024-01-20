@@ -82,6 +82,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "dwrealestate-74c439c17de3.herokuapp.com",
     "localhost",
+    "localhost:8000",
+    "localhost:5432",
 ]
 
 
