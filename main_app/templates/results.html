@@ -19,13 +19,59 @@
                 <span class="text-slate-500 mb-2">Beds: {{ property.BedroomsTotal }}</span>
                 <span class="text-slate-500 mb-4">Total Sq. Ft.: {{ property.LivingArea }}</span>
             </p>
-            <form action="{% url 'save_listing' %}" method="post">
+            <!-- Save Listing form -->
+            <form action="{% if folder_id %}{% url 'save_listing' folder_id %}{% endif %}" method="post" onsubmit="return showFolderSelectionModal(this);">
                 {% csrf_token %}
                 <input type="hidden" name="property_id" value="{{ property.id }}">
+
+                <!-- Save Listing button -->
                 <button type="submit" class="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded">
                     Save Listing
                 </button>
             </form>
+
+            <!-- Folder Selection Modal -->
+            <div id="folderSelectionModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+                <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                    <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                    </div>
+
+                    <!-- This element is to trick the browser into centering the modal contents. -->
+                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                    <!-- Modal Content -->
+                    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Choose folder to save listing to</h3>
+
+                            <!-- Display existing folders, if any -->
+                            <ul>
+                                {% for folder in user.folder_set.all %}
+                                    <li>
+                                        <input type="radio" name="folder_id" value="{{ folder.id }}">
+                                        <label for="folder_id_{{ folder.id }}" class="cursor-pointer hover:underline hover:text-slate-700 hover:font-bold">
+                                            {{ folder.name }}
+                                        </label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <!-- Create Folder form -->
+                            <label for="new_folder_name">Or create a new folder:</label>
+                            <input type="text" id="new_folder_name" name="new_folder_name" />
+                        </div>
+                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                            <button type="button" onclick="saveListingWithFolder()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-slate-500 text-base font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                Save
+                            </button>
+                            <button type="button" onclick="hideFolderSelectionModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Clickable smaller default property image (linked to detailed photos page) -->
             {% if property.id %}
@@ -43,4 +89,34 @@
     {% endfor %}
 </div>
 
+<script>
+    function showFolderSelectionModal(form) {
+        // Display the folder selection modal
+        document.getElementById('folderSelectionModal').classList.remove('hidden');
+
+        // Set the form as a global variable so it can be accessed later
+        window.currentForm = form;
+
+        // Prevent the default form submission
+        return false;
+    }
+
+    function hideFolderSelectionModal() {
+        // Hide the folder selection modal
+        document.getElementById('folderSelectionModal').classList.add('hidden');
+    }
+
+    function saveListingWithFolder() {
+        // Get the selected folder_id
+        var selectedFolderId = document.querySelector('input[name="folder_id"]:checked').value;
+
+        // Set the folder_id value in the original form
+        window.currentForm.querySelector('input[name="folder_id"]').value = selectedFolderId;
+
+        // Submit the original form
+        window.currentForm.submit();
+    }
+</script>
+
 {% endblock %}
+

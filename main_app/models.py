@@ -46,5 +46,18 @@ class Listing(models.Model):
 class Folder(models.Model):
     name = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        permissions = [
+            ('can_add_folder', 'Add Folder'),
+            ('can_delete_folder', 'Delete Folder'),
+            ('can_edit_folder', 'Edit Folder'),
+            ('can_view_folder', 'View Folder'),
+        ]
+
+    def __str__(self):
+        return self.name
+    
+    
 # Define other models such as User, Agent, SearchCriteria, SavedSearch, FavoriteProperty
 # Make sure to handle relationships and fields according to your ERD.

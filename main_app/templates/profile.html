@@ -1,24 +1,56 @@
 <!-- main_app/templates/profile.html -->
 
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <h2 class="text-4xl font-bold md-4 text-slate-700">Profile</h2>
 
-<div class="flex items-center justify-center h-screen">
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-md w-full">
-            <h2>Welcome, {{ user.get_username }}!</h2>
-            <p>Email: {{ user.email }}</p>
-            <p>Joined: {{ user.date_joined }}</p>
-            <hr>
-            <!-- <p>Properties: {{ user.realty_data_set.all }}</p>
-            <p>Properties: {{ user.realty_data_set.all|length }}</p>
-            <p>Properties: {{ user.realty_data_set.all|length }}</p>
-            <p>Properties: {{ user.realty_data_set.all|length }}</p>
-            <p>Properties: {{ user.realty_data_set.all|length }}</p>
-            <p>Properties: {{ user.realty_data_set.all|length }}</p> -->
-    </div>
+<div class="flex items-center justify-center h-screen text-slate-500">
+  <div class="bg-slate-200 shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-md w-full">
+    <h2>Welcome, <span class="text-slate-700 font-bold">{{ user.get_username }}!</span></h2>
+    <p>Email: {{ user.email }}</p>
+    <p>Joined: {{ user.date_joined }}</p>
+    <hr />
+
+    <!-- Folder creation form -->
+    <form method="post" action="{% url 'folder_create' %}">
+      {% csrf_token %}
+      <label for="folder_name">Folder Name:</label>
+      <input type="text" id="folder_name" name="folder_name" required />
+      <button type="submit" class="font-bold text-slate-700">Create Folder</button>
+    </form>
+
+<!-- Display existing folders, if any -->
+<h3>Your Folders:</h3>
+{% if user.folder_set.all %}
+    <ul>
+        {% for folder in user.folder_set.all %}
+            <li>
+                <span class="cursor-pointer hover:underline hover:text-slate-700 hover:font-bold" onclick="toggleFolderContents(this)">
+                    {{ folder.name }}
+                </span>
+                <ul class="folder-contents" style="display: none;">
+                    {% for listing in folder.listings.all %}
+                        <li>{{ listing.name }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No folders yet.</p>
+{% endif %}
+<script>
+    function toggleFolderContents(element) {
+        var contents = element.nextElementSibling;
+        if (contents.style.display === 'none' || contents.style.display === '') {
+            contents.style.display = 'block';
+        } else {
+            contents.style.display = 'none';
+        }
+    }
+</script>
+
+</div>
 </div>
 
 {% endblock %}

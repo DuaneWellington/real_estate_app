@@ -16,6 +16,7 @@ django-allauth = "*"
 django-tailwind = {extras = ["reload"], version = "*"}
 python-decouple = "*"
 python-dotenv = "*"
+requests = "*"
 
 [dev-packages]
 

@@ -5,9 +5,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import EmailValidator
 from .models import User, Folder
 
-# class CustomAuthenticationForm(AuthenticationForm):
-#     firstname = forms.CharField(max_length=30, required=True)
-#     lastname = forms.CharField(max_length=30, required=True)
 class UserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
@@ -34,7 +31,15 @@ class FolderForm(forms.ModelForm):
         model = Folder
         fields = ['name']
 
+class FolderCreateForm(forms.ModelForm):
+    class Meta:
+        model = Folder
+        fields = ['name']
+
 class FolderUpdateForm(forms.ModelForm):
     class Meta:
         model = Folder
         fields = ['name']
+
+class SaveListingForm(forms.Form):
+    listing_id = forms.CharField(label='Listing ID', max_length=100)

@@ -1,33 +1,41 @@
 # PATH: 'main_app/views.py'
 
-# from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
-# from django.contrib.auth.views import LoginView as auth_login_view
 import json
 from django.contrib.auth.decorators import login_required
-from .forms import UserCreationForm, RealtySearchForm
+from .forms import UserCreationForm, RealtySearchForm, FolderCreateForm, FolderUpdateForm, SaveListingForm
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseServerError, JsonResponse
-# from .api_utils import get_dynamic_authorization
 import requests
-# from .utils import fetch_realty_data, fetch_new_listings
+from .utils import get_access_token, fetch_property_data
 from .models import User, Property, Rental, Listing, Folder
 from decouple import config
 
 # Create your views here.
 
-# user = User.objects.create_user(username='example', password='password', email='example@example.com')
-# if saved_user:
-#     print("User created and saved successfully")
-# else:
-#     print("Failed to create user")
+def api_property_data_view(request):
+    try:
+    
+    # Access token obtained from the API
+        access_token = get_access_token()
 
+    # API endpoint for obtaining property data
+        if access_token:
+            property_data = fetch_property_data(access_token)
+            print(property_data)
+        else:
+            print("Failed to get access token")
 
-# users = User.objects.all()
+            property_data = None
 
-# for user in users:
-#     print(f"ID: {user.id}, First Name: {user.first_name}, Last Name: {user.last_name}, Email: {user.email}")
+    except Exception as e:
+        print(f"Exception during API call: {e}")
+        property_data = None
+
+    # Your existing view code goes here
+        
+    return render(request, 'main_app/api_results.html', {'property_data': property_data})
 
 def my_view(request):
     x_rapidapi_key = config('X_RAPIDAPI_KEY')
@@ -60,7 +68,8 @@ def home(request):
 
 @login_required
 def profile(request):
-    return render(request, 'profile.html', {'user': request.user})
+    user_folders = Folder.objects.filter(user=request.user)
+    return render(request, 'profile.html', {'user_folders': user_folders})
 
 def new_listings(request):
     new_listings = Property.objects.filter(status='For Sale')
@@ -82,9 +91,10 @@ def search(request):
 
 
 def results(request):
+    folder_id = request.GET.get('folder_id')
     with open('main_app/static/main_app/json/realty_data.json') as json_file:
         realty_data = json.load(json_file)
-    return render(request, 'results.html', {'realty_data': realty_data})
+    return render(request, 'results.html', {'realty_data': realty_data, 'folder_id': folder_id})
 
 def property_photos(request, property_id):
     property = get_object_or_404(Property, id=property_id)
@@ -97,17 +107,19 @@ def error(request):
 def contact_view(request):
     return render(request, 'main_app/contact.html')
 
+@login_required
 def folder_create(request):
     if request.method == 'POST':
-        folder = FolderCreateForm(request.POST)
+        form = FolderCreateForm(request.POST)
         if form.is_valid():
             folder = form.save(commit=False)
             folder.user = request.user
             folder.save()
-            return redirect('folder_detail', folder_id=folder.id)
-        else:
-            form = FolderCreateForm()
-        return render(request, 'folder_create.html', {'form': form})
+            return redirect('profile')
+    else:
+        form = FolderCreateForm()
+    folder_id = request.GET.get('folder_id')
+    return render(request, 'profile.html', {'form': form})
 
 def folder_detail(request, folder_id):
     folder = get_object_or_404(Folder, id=folder_id)
@@ -125,24 +137,58 @@ def folder_update(request, folder_id):
         form = FolderUpdateForm(instance=folder)
     return render(request, 'folder_update.html', {'folder': folder, 'form': form})
 
+# @login_required
+# def save_listing(request):
+
 @login_required
-def save_listing(request):
-    folders = Folder.objects.filter(user=request.user)
-
+def save_listing(request, folder_id):
+    folder = Folder.objects.get(id=folder_id)
+    
     if request.method == 'POST':
-        property_id = request.POST.get('property_id')
-        folder_id = request.POST.get('folder')
+        form = SaveListingForm(request.POST)
+        if form.is_valid():
+            listing_id = form.cleaned_data['listing_id']
+            save_listing_to_folder(listing_id, folder)
+            return redirect('folder_detail', folder_id=folder.id)
+    else:
+        form = SaveListingForm()
 
-        print(request.POST)
-        print('Property ID:', property_id)
-        print('Folder ID:', folder_id)
+    return render(request, 'save_listing.html', {'form': form, 'folder': folder})
 
-        property = get_object_or_404(Property, id=property_id)
-        folder = get_object_or_404(Folder, id=folder_id)
-        Listing.objects.create(property=property, folder=folder)
-        return redirect('results')  # Redirect to the results page or another page
 
-    return render(request, 'save_listing.html', {'folders': folders})
+
+
+    # if request.method == 'POST':
+    #     listing_id = request.POST.get('listing_id')
+    #     folder_id = request.POST.get('folder_id')
+
+    #     folder = Folder.objects.get(pk=folder_id) if folder_id else None
+        
+    #     listing - Listing.objects.get(pk=listing_id)
+
+    #     if folder:
+    #         folder.listings.add(listing)
+    #     else:
+    #         form = FolderCreateForm(request.POST)
+    #         if form.is_valid():
+    #             new_folder = form.save(commit=False)
+    #             new_folder.user = request.user
+    #             new_folder.save()
+    #             new_folder.listings.add(listing)
+
+    # return redirect('profile')
+
+
+    #     print(request.POST)
+    #     print('Property ID:', property_id)
+    #     print('Folder ID:', folder_id)
+
+    #     property = get_object_or_404(Property, id=property_id)
+    #     folder = get_object_or_404(Folder, id=folder_id)
+    #     Listing.objects.create(property=property, folder=folder)
+    #     return redirect('results')  # Redirect to the results page or another page
+
+    # return render(request, 'save_listing.html', {'folders': folders})
 
 def listing_toggle_favorite(request, listing_id):
     listing = get_object_or_404(Listing, id=listing_id)
@@ -150,178 +196,70 @@ def listing_toggle_favorite(request, listing_id):
     listing.save()
     return redirect('folder_detail', folder_id=listing.folder.id)
 
-def listing_delete(request, listing_id):
-    listing = get_object_or_404(Listing, id=listing_id)
-    folder_id = listing.folder.id
-    listing.delete()
+def listing_delete(request, folder_id, listing_id):
+    SavedListing.objects.filter(folder_id=folder_id, listing_id=listing_id).delete()
     return redirect('folder_detail', folder_id=folder_id)
 
+
+    # listing = get_object_or_404(Listing, id=listing_id)
+    # folder_id = listing.folder.id
+    # listing.delete()
+    # return redirect('folder_detail', folder_id=folder_id)
+
 def folder_delete(request, folder_id):
-    folder = get_object_or_404(Folder, id=folder_id)
-    folder.delete()
-    return redirect('home')  # Adjust the redirection as needed
+    Folder.objects.filter(id=folder_id, user=request.user).delete()
+    return redirect('profile')
+
+    # folder = get_object_or_404(Folder, id=folder_id)
+    # folder.delete()
+    # return redirect('home')  # Adjust the redirection as needed
 
 
-# def realty_data_view(request):
-
-#     form = RealtySearchForm(request.GET)
-
-#     if form.is_valid():
-#         reference_number = form.cleaned_data['reference_number']
-#         culture_id = form.cleaned_data['culture_id']
-
-#         realty_data = fetch_realty_data(reference_number, culture_id)
-
-#         if realty_data:
-#             return render(request, 'results.html', {'realty_data': realty_data})
-#         else:
-#             return
-#         error_message = "Failed to fetch data from API"
-#     else:
-#         error_message = "Invalid form data"
-
-#         return render(request, 'error.html', {'error_message': error_message})
-    
-# def property_list(request):
-#     access_token = get_dynamic_authorization()
-
-#     if access_token:
-#         api_url = "https://api.realtyfeed.com/reso/odata/Property"
-#         headers = {
-#             "Authorization": f"Bearer {access_token}",
-#             "x-api-key": "52d03659f5mshde22d1aee3d427cp1154eajsn60129072a38e",
-#         }
-
-#         response = requests.get(api_url, headers=headers)
-
-#         if response.status_code == 200:
-#             properties_data = response.json().get("value", [])
-
-#             for property_data in properties_data:
-#                 listing_key = property_data.get("ListingKey")
-#                 modification_timestamp = property_data.get("ModificationTimestamp")
-
-#                 existing_property, created = Property.objects.get_or_create(
-#                     listing_key=listing_key,
-#                     defaults={
-#                         "modification_timestamp": modification_timestamp},
-#                 )
-
-#                 if not created:
-#                     existing_property.modification_timestamp = modification_timestamp
-#                     existing_property.save()
-
-#             properties = Property.objects.all()
-
-#             return render(request, "property_list.html", {"properties": properties})
-        
-#     return render(request, "error.html")
-
-# def YourRegistrationView(View):
-#     template_name = 'registration/register.html'
-
-#     def get(self, request):
-#         form = UserCreationForm()
-#         return render(request, self.template_name, {'form': form})
-    
-#     def post(self, request):
-#         form = UserCreationForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             return redirect('home')
-#         return render(request, self.template_name, {'form': form})
 
 
-    # reference_number = request.GET.get('reference_number')
-    # culture_id = request.GET.get('culture_id')
 
-    # realty_data = fetch_realty_data(reference_number, culture_id)
 
-    # if realty_data:
-    #     return JsonResponse(realty_data)
-    # else:
-    #     return JsonResponse({'error': 'Unable to fetch data from API'}, status=500)
-    
-    
-    
-    # def properties_index(request):
-    #     return render(request, 'properties/index.html')
-    
-    # def properties_detail(request):
-    #     return render(request, 'properties/detail.html')
-    
-    # def properties_create(request):
-    #     return render(request, 'properties/create.html')
-    
-    # def properties_update(request):
-    #     return render(request, 'properties/update.html')
-    
-    # def properties_delete(request):
-    #     return render(request, 'properties/delete.html')
-    
-    # def auto_complete_view(request):
-#     url = "https://realty-in-ca1.p.rapidapi.com/locations/v2/auto-complete"
-#     querystring = {"Query": "Quebec", "CultureId": "1", "IncludeLocations": "true"}
+# **********************  API CODE *************************
+# Hopefully this is the means of getting the API to work
+
+# def get_listings(request):
+#     api_url = "https://api.realtyna.com/mls-router/v1/getListings"
+
 #     headers = {
-#         "X-RapidAPI-Key": "52d03659f5mshde22d1aee3d427cp1154eajsn60129072a38e",
-#         "X-RapidAPI-Host": "realty-in-ca1.p.rapidapi.com"
+#         "Content-Type": "application/json",
+#         "Authorization": "Bearer YOUR-API-KEY",
+#         "x-rapidapi-key": "YOUR-RAPID-API-KEY",
+#         "x-rapidapi-host": "mls-router1.p.rapidapi.com",
 #     }
-#     response = requests.get(url, headers=headers, params=querystring)
-#     data = response.json()
 
-#     return render(request, 'your_app/auto_complete_template.html', {'data': data})
+#     # Make a request to get listings
+#     response = requests.get(api_url, headers=headers)
 
-# class CustomLoginView(auth_login_view):
-#     form_class = CustomAuthenticationForm
-#     template_name = 'registration/login.html'
-
-# def login_view(request):
-#     if request.method == 'POST':
-#         firstname = request.POST.get('firstname')
-#         lastname = request.POST.get('lastname')
-#         password = request.POST.get('password')
-#         user = authenticate(request, firstname=firstname, lastname=lastname, password=password)
-#         if user is not None:
-#             login(request, user)
-#             return redirect('profile')
-#         else:
-#             return HttpResponseServerError("Invalid login credentials")
+#     # Process the response
+#     if response.status_code == 200:
+#         result = response.json()
+#         return JsonResponse({"result": result})
 #     else:
-#         return render(request, 'registration/login.html')
+#         error = response.text
+#         return JsonResponse({"error": error}, status=response.status_code)
+    
+# def get_property_detail(request, property_id):
+#     api_url = f"https://api.realtyna.com/mls-router/v1/getProperty/{property_id}"
 
-# @login_required
-# def authenticated_view(request):
-# def search_view(request):
-#     form = RealtySearchForm(request.GET)
-#     return render(request, 'search.html', {'form' : form})
-        # pass
-# def results_view(request):
-#     if request.method == 'GET':
-#         form = RealtySearchForm(request.GET)
-#         if form.is_valid():
-#             min_list_price = form.cleaned_data['min_list_price']
-#             max_list_price = form.cleaned_data['max_list_price']
-#             bedrooms = form.cleaned_data['bedrooms']
-#             bathrooms = form.cleaned_data['bathrooms']
-#             try:
-#                 realty_data = fetch_realty_data(min_list_price, max_list_price, bedrooms, bathrooms)
+#     headers = {
+#         "Content-Type": "application/json",
+#         "Authorization": "Bearer YOUR-API-KEY",
+#         "x-rapidapi-key": "YOUR-RAPID-API-KEY",
+#         "x-rapidapi-host": "mls-router1.p.rapidapi.com",
+#     }
 
-#                 if realty_data:
-#                     return render(request, 'results.html', {'realty_data': realty_data})
-#                 else:
-#                     error_message = "Failed to fetch data from API"
-#                     return render(request, 'error.html', {'error_message': error_message}) 
-                
-#             except request.RequestException as e:
-#                 print(f"API request failed: {str(e)}")
-#                 error_message = "an error occurred while fetching data from API"
-#                 return render(request, 'error.html', {'error_message': error_message})
-            
-#             except Exception as e:
-#                 print(f"An error occurred: {str(e)}")
-#                 error_message = "An error occurred while fetching data from API"
-#                 return render(request, 'error.html', {'error_message': error_message}) 
-        
-#         else:
-#             return render(request, 'error.html', {'error_message': "Invalid form data"})
+#     # Make a request to get property details
+#     response = requests.get(api_url, headers=headers)
+
+#     # Process the response
+#     if response.status_code == 200:
+#         result = response.json()
+#         return JsonResponse({"result": result})
+#     else:
+#         error = response.text
+#         return JsonResponse({"error": error}, status=response.status_code)
