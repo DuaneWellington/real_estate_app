@@ -33,7 +33,7 @@
     <section class="new-listings">
         <h2>New Listings</h2>
         <!-- add a list of the 5 most recent listings here -->
-        <a href="{% url 'new_listings' %}">Show More New Listings</a>
+        <a href="{% url 'new_listings' %}"><span class="cursor-pointer hover:underline hover:text-slate-700 hover:font-bold">Show More New Listings</span></a>
 
         {% for listing in new_listings_data.listings %}
         <!-- {% for property in new_listings %} -->

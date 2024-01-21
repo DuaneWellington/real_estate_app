@@ -10,6 +10,7 @@ from django.http import HttpResponseServerError, JsonResponse
 import requests
 from .utils import get_access_token, fetch_property_data
 from .models import User, Property, Rental, Listing, Folder
+from .api_utils import get_dynamic_authorization
 from decouple import config
 
 # Create your views here.
@@ -59,12 +60,12 @@ def register(request):
         print(f"Exception during registration: {e}")
 
 def home(request):
-    # new_listings_data = fetch_new_listings()
-    # hero_image_urls = [listing['images'][0] for listings in new_listings_data['listings']] if new_listings_data else []
-    # new_listings = Property.objects.filter(status='For Sale')[:5]
-    # new_rentals = Rental.objects.filter(status='For Rent')[:5]
-    # return render(request, 'home.html', {'hero_image_urls': hero_image_urls, 'new_listings_data': new_listings_data, 'new_rentals': new_rentals})
-    return render(request, 'home.html')
+    new_listings_data = fetch_new_listings()
+    hero_image_urls = [listing['images'][0] for listings in new_listings_data['listings']] if new_listings_data else []
+    new_listings = Property.objects.filter(status='For Sale')[:5]
+    new_rentals = Rental.objects.filter(status='For Rent')[:5]
+    return render(request, 'home.html', {'hero_image_urls': hero_image_urls, 'new_listings_data': new_listings_data, 'new_rentals': new_rentals})
+    # return render(request, 'home.html')
 
 @login_required
 def profile(request):
@@ -215,8 +216,24 @@ def folder_delete(request, folder_id):
     # return redirect('home')  # Adjust the redirection as needed
 
 
+# def fetch_new_listings():
+#     url = "https://mls-router1.p.rapidapi.com/reso/odata/Property"
+#     querystring = {"Page": "1", "PageSize": "10", "CultureId": "1"}
 
+#     headers = {
+#         "Authorization": "eyJraWQiOiJ4TmlXRnlON1V5OTU5a3hnT3J6ZnJQRGJFdlZDXC8rSGNZQ1RXRlJ1ekJSND0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxMThwbzByNmkxbzFjY3N1NmVlNGNsMTMydSIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXBpXC9yZWFkIiwiYXV0aF90aW1lIjoxNzA1ODU3NzIwLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9Zd0VaemdxdzkiLCJleHAiOjE3MDU4NjEzMjAsImlhdCI6MTcwNTg1NzcyMCwidmVyc2lvbiI6MiwianRpIjoiOTA4OTY5OTgtNTVkMS00ZGRkLWEyOTAtNjJhYjE5ZTgyMjc4IiwiY2xpZW50X2lkIjoiMTE4cG8wcjZpMW8xY2NzdTZlZTRjbDEzMnUifQ.tmJRDagRFd-NFxfIHflheVZxWUFC5XuQPmrAZM0xwMdV4sKfSPB5SxIKLcLJZf8O-9FLokDZhYNx7VPxndbTnc88J_s4ujkunLPdCSbJGCwMQsxLGy_hJdl2Vmz2teRh5D7E9s5itgKjt6qPcUDoixxNsd6U6jrCCbV8TtrLv8UpjBJ9EaeWuoaRjLfFm38xMUFj6-KBRC1snlEqA5xY7udV9FzxXjDlTnLhoGSALrvAMjWKJDf8BbMuw6ayAvTTisEDstXvnJIdlzfGUsOciYiqIkdzHdK-19GmDrVFoV-RBJh04_CUF6oTAq_tubiDJ-uvhRHnh_iXLgokk36XIQ",
+#         # "Authorization": f"Bearer {get_dynamic_authorization()}",
+#         "x-api-key": "a50YsdAcOQ6xyDqVYTzEB57jBqKVYV01MyTD4at6",
+#         "X-RapidAPI-Key": "52d03659f5mshde22d1aee3d427cp1154eajsn60129072a38e",
+#         "X-RapidAPI-Host": "mls-router1.p.rapidapi.com",
+#     }
 
+#     response = requests.get(url, headers=headers, params=querystring)
+
+#     if response.status_code == 200:
+#         return response.json()
+#     else:
+#         return None
 
 
 # **********************  API CODE *************************
